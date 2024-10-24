@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กดสุ่มจำนวนเงิน</title>
+    <style>
+        body {
+            background-color: #f5d6db; /* สีชมพู */
+            color: #000000; /* สีม่วงเข้ม */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        button {
+            background-color: #2f98df; /* สีน้ำเงินฟ้า */
+            border: none;
+            color: rgb(255, 221, 221);
+            padding: 15px 30px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            margin: 10px;
+            border-radius: 25px; /* มุมกลม */
+            transition: background-color 0.3s, transform 0.2s; /* เอฟเฟกต์การเปลี่ยนสีและขยาย */
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* เงาของปุ่ม */
+        }
+        button:hover {
+            background-color: #00BFFF; /* สีเมื่อเลื่อนเมาส์ */
+            transform: scale(1.1); /* ขยายขนาดเมื่อเลื่อนเมาส์ */
+        }
+        button:active {
+            transform: scale(0.9); /* ขนาดเล็กลงเมื่อกดปุ่ม */
+        }
+        #result {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>สุ่มจำนวนเงิน</h1>
+    <button id="randomButton">สุ่มจำนวนเงิน</button>
+    <button id="resetButton" style="display: none;">สุ่มอีกครั้ง</button>
+    <div id="result"></div>
+
+    <script>
+        const amounts = [1, 2, 3, 4, 5];
+        const probabilities = [80, 10, 5, 3, 2];
+
+        function getRandomAmount() {
+            const random = Math.random() * 100;
+            let cumulativeProbability = 0;
+            
+            for (let i = 0; i < probabilities.length; i++) {
+                cumulativeProbability += probabilities[i];
+                if (random < cumulativeProbability) {
+                    return amounts[i];s
+                }
+            }
+            return amounts[amounts.length - 1];
+        }
+
+        function hasAlreadyClicked() {
+            return localStorage.getItem("hasClicked") === "true";
+        }
+
+        window.onload = function() {
+            if (hasAlreadyClicked()) {
+                document.getElementById("randomButton").disabled = true; // ปิดปุ่มสุ่ม
+                document.getElementById("result").innerText = "คุณได้สุ่มไปแล้ว!";
+
+                // แสดงปุ่มสุ่มอีกครั้งหลังจาก 3 นาที (300000 มิลลิวินาที)
+                setTimeout(() => {
+                    document.getElementById("resetButton").style.display = "inline-block";
+                }, 200000);
+            }
+        };
+
+        document.getElementById("randomButton").onclick = function() {
+            if (!hasAlreadyClicked()) {
+                const randomAmount = getRandomAmount();
+                document.getElementById("result").innerText = "คุณสุ่มได้: " + randomAmount + " บาท";
+                localStorage.setItem("hasClicked", "true");
+                this.disabled = true; // ปิดปุ่มสุ่ม
+            } else {
+                alert("คุณได้สุ่มไปแล้ว!");
+            }
+        };
+
+        document.getElementById("resetButton").onclick = function() {
+            localStorage.removeItem("hasClicked"); // รีเซ็ตสถานะการสุ่ม
+            document.getElementById("randomButton").disabled = false; // เปิดปุ่มสุ่ม
+            this.style.display = "none"; // ซ่อนปุ่มสุ่มอีกครั้ง
+            document.getElementById("result").innerText = ""; // ลบผลลัพธ์
+        };
+    </script>
+
+</body>
+</html>
